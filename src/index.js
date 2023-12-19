@@ -4,35 +4,44 @@ fetch ("http://localhost:3000/ramens")
     .then ((data) => renderRamen(data))
 
 function renderRamen(ramenArr){
+    const ramenMenu = document.querySelector('#ramen-menu')
+
     ramenArr.forEach((ramenObj) => {
-        const li = document.createElement('li')
-        const p = document.createElement('p')
-        const div = document.querySelector('#ramen-menu')
-        const ul = document.createElement('ul')
-        let name = ramenObj.name
-        p.textContent = name
         const img = document.createElement('img')
-        let imgURL = ramenObj.image
-        img.src = imgURL
+        img.src = ramenObj.image
 
-        li.append(img, p)
-        ul.appendChild(li)
-        div.appendChild(ul)
+        ramenMenu.appendChild(img)
 
-        ul.addEventListener('click', showRamenDetails)
+        img.addEventListener('click', handleClick)
 
-        function showRamenDetails(ramenObj) {
-            let ramenDetail = document.querySelector('ramen-detail');
-        
-            // Display the information in the #ramen-detail div
-            ramenDetail.restaurant.textContent = `Restaurant: ${ramenObj.restaurant}`
-            ramenDetail.name.textContent = `Name: ${ramenObj.name}`
+        function handleClick(){
+            const nameLocation = document.querySelector('.name')
+            const imgLocation = document.querySelector('.detail-image')
+            const restLocation = document.querySelector('.restaurant')
+            const ratingLocation = document.querySelector('#rating-display')
+            const commentLocation = document.querySelector('#comment-display')
+
+            nameLocation.textContent = ramenObj.name
+            imgLocation.src = ramenObj.image
+            restLocation.textContent = ramenObj.restaurant
+            ratingLocation.textContent = ramenObj.rating
+            commentLocation.textContent = ramenObj.comment
         }
     })
 }
 
-//make an event listener for a click on the image from the ramen menu to show details on the ramen detail div
+const form = document.querySelector('#new-ramen')
 
-// deliverables
-// 2. "click" image from menu div and see info desplayed inside the detail div (class in the div are named: detail-img, name, restaurant)
-// 3. create new ramen "submit" to new ramen form
+form.addEventListener('submit', (e) => handleAddNewRamen(e))
+
+function handleAddNewRamen(e){
+    e.preventDefault()
+    const newRamenObj = {
+        name : e.target.name.value,
+        restaurant : e.target.restaurant.value,
+        image : e.target.image.value,
+        rating : e.target.rating.value,
+        comment : e.target['new-comment'].value,
+    }
+    renderRamen([newRamenObj])
+}
